@@ -7,6 +7,7 @@ using KanaMelody.Views;
 using ManagedBass;
 using ManagedBass.Fx;
 using ManagedBass.Mix;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KanaMelody;
 
@@ -39,11 +40,18 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        InitializeAudioManager();
+        
+        var collection = new ServiceCollection();
+        collection.AddCommonServices();
+        
+        var services = collection.BuildServiceProvider();
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = services.GetRequiredService<MainWindowViewModel>(),
             };
         }
 
