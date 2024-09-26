@@ -29,9 +29,12 @@ public class NowPlayingService
     public string Artist => _nowPlaying.Artist;
     public string Album => _nowPlaying.Album;
     
-    public NowPlaying GetNowPlaying()
+    public double CurrentPosition => Bass.ChannelBytes2Seconds(_nowPlaying.SongStream, Bass.ChannelGetPosition(_nowPlaying.SongStream));
+    public double TotalLength => Bass.ChannelBytes2Seconds(_nowPlaying.SongStream, Bass.ChannelGetLength(_nowPlaying.SongStream));
+    
+    public void SetPosition(double position)
     {
-        return _nowPlaying;
+        Bass.ChannelSetPosition(_nowPlaying.SongStream, Bass.ChannelSeconds2Bytes(_nowPlaying.SongStream, position));
     }
     
     public void PlayMusic(string path)
@@ -42,7 +45,6 @@ public class NowPlayingService
             Bass.StreamFree(_nowPlaying.SongStream);
         }
         _nowPlaying.SongStream = Bass.CreateStream(path);
-        Console.WriteLine(_nowPlaying.SongStream);
         if (_nowPlaying.SongStream == 0)
         {
             return;

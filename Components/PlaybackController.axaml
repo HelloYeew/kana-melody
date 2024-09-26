@@ -6,9 +6,17 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="KanaMelody.Components.PlaybackController"
              x:DataType="vm:PlaybackControllerViewModel">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-        <Button Content="Play" Command="{Binding PlayCommand}" />
-        <Button Content="Pause" Command="{Binding PauseCommand}" />
-        <TextBlock Text="{Binding PlayingTitle}"></TextBlock>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
+        <TextBlock Text="{Binding PlayingTitle}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <Button Content="⏮" Width="40" Height="40" Margin="5"/>
+            <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="5"/>
+            <Button Content="⏭" Width="40" Height="40" Margin="5"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <TextBlock Text="{Binding CurrentPositionString}" Margin="5"/>
+            <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Width="200" Margin="5"/>
+            <TextBlock Text="{Binding TotalLengthString}" Margin="5"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>
