@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="KanaMelody.App"
              xmlns:local="using:KanaMelody"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Default"
+             Name="KanaMelody">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -12,4 +13,10 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+             
+     <NativeMenu.Menu>
+         <NativeMenu>
+             <!-- <NativeMenuItem Header="About My App" Command="{Binding AboutCommand}" /> -->
+         </NativeMenu>
+     </NativeMenu.Menu>
 </Application>
