@@ -18,6 +18,8 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
     
+    // TODO: Kanna Logger maybe serilog
+    
     private void InitializeAudioManager()
     {
         // TODO: This need to be in seperate class, not only depend on BASS

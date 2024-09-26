@@ -8,18 +8,13 @@ public class NowPlayingService
 { 
     private readonly NowPlaying _nowPlaying;
     
-    public NowPlayingService(NowPlaying nowPlaying)
+    public NowPlayingService()
     {
-        _nowPlaying = nowPlaying;
-        _nowPlaying.Title = "Title";
+        _nowPlaying = new NowPlaying();
     }
     
     public void Play()
     {
-        if (_nowPlaying.SongStream == 0)
-        {
-            PlayMusic();
-        }
         Bass.ChannelPlay(_nowPlaying.SongStream);
     }
     
@@ -34,14 +29,19 @@ public class NowPlayingService
     public string Artist => _nowPlaying.Artist;
     public string Album => _nowPlaying.Album;
     
-    public void PlayMusic()
+    public NowPlaying GetNowPlaying()
+    {
+        return _nowPlaying;
+    }
+    
+    public void PlayMusic(string path)
     {
         if (_nowPlaying.SongStream != 0)
         {
             Bass.ChannelStop(_nowPlaying.SongStream);
             Bass.StreamFree(_nowPlaying.SongStream);
         }
-        _nowPlaying.SongStream = Bass.CreateStream("/Users/helloyeew/Music/Personal/[M3-2020秋] At the Garret - Invitations to Black Theater/00-02-A rumor of Black Theater.flac");
+        _nowPlaying.SongStream = Bass.CreateStream(path);
         Console.WriteLine(_nowPlaying.SongStream);
         if (_nowPlaying.SongStream == 0)
         {
@@ -49,9 +49,8 @@ public class NowPlayingService
         }
         Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
         Bass.ChannelPlay(_nowPlaying.SongStream);
-        Bass.ChannelPlay(_nowPlaying.SongStream);
         
-        var tfile = TagLib.File.Create("/Users/helloyeew/Music/Personal/[M3-2020秋] At the Garret - Invitations to Black Theater/00-02-A rumor of Black Theater.flac");
+        var tfile = TagLib.File.Create(path);
         _nowPlaying.Title = tfile.Tag.Title ?? "";
         _nowPlaying.Artist = tfile.Tag.FirstPerformer ?? "";
         _nowPlaying.Album = tfile.Tag.Album ?? "";

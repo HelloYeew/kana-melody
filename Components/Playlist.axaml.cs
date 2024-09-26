@@ -1,11 +1,13 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using KanaMelody.ViewModels;
 
 namespace KanaMelody.Components;
 
-public partial class PlaybackController : UserControl
+public partial class Playlist : UserControl
 {
-    public PlaybackController()
+    public Playlist()
     {
         InitializeComponent();
     }

@@ -1,4 +1,3 @@
-using KanaMelody.Models;
 using KanaMelody.Services;
 using KanaMelody.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,10 +8,11 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<NowPlaying>();
         collection.AddSingleton<NowPlayingService>();
+        collection.AddSingleton<PlaylistService>();
         
         collection.AddSingleton<PlaybackControllerViewModel>();
         collection.AddSingleton<MainWindowViewModel>();
+        collection.AddSingleton<PlaylistViewModel>();
     }
 }
