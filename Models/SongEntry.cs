@@ -1,4 +1,5 @@
 using System.IO;
+using ATL;
 using Avalonia.Media.Imaging;
 
 namespace KanaMelody.Models;
@@ -16,21 +17,10 @@ public class SongEntry
     public SongEntry(string path)
     {
         Path = path;
-        var tfile = TagLib.File.Create(path);
-        Title = tfile.Tag.Title ?? "";
-        Artist = tfile.Tag.FirstPerformer ?? "";
-        Album = tfile.Tag.Album ?? "";
-        if (tfile.Tag.Pictures.Length > 0)
-        {
-            var picture = tfile.Tag.Pictures[0];
-            using (var stream = new MemoryStream(picture.Data.Data))
-            {
-                AlbumCover = new Bitmap(stream);
-            }
-        }
-        else
-        {
-            AlbumCover = null;
-        }
+        var trackFile = new Track(path);
+        Title = trackFile.Title;
+        Artist = trackFile.Artist;
+        Album = trackFile.Album;
+        AlbumCover = trackFile.EmbeddedPictures.Count > 0 ? new Bitmap(new MemoryStream(trackFile.EmbeddedPictures[0].PictureData)) : null;
     }
 }
