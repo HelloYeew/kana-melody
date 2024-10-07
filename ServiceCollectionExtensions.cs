@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         collection.AddSingleton<NowPlayingService>();
         collection.AddSingleton<PlaylistService>();
+        collection.AddSingleton<ConfigService>();
         
         collection.AddSingleton<PlaybackControllerViewModel>();
         collection.AddSingleton<MainWindowViewModel>();

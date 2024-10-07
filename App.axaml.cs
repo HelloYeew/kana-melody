@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using KanaMelody.Services;
 using KanaMelody.ViewModels;
 using KanaMelody.Views;
 using ManagedBass;
@@ -56,6 +57,9 @@ public partial class App : Application
                 DataContext = services.GetRequiredService<MainWindowViewModel>(),
             };
         }
+        
+        // Invoke LoadConfig
+        ConfigService configService = services.GetRequiredService<ConfigService>();
 
         base.OnFrameworkInitializationCompleted();
     }
