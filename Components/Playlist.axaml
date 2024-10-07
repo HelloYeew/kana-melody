@@ -11,12 +11,9 @@
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:SongEntry}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{Binding AlbumCover}" Width="50" Height="50"/>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Title}" Margin="5"/>
-                        <TextBlock Text="{Binding Artist}" Margin="5"/>
-                        <TextBlock Text="{Binding Album}" Margin="5"/>
-                    </StackPanel>
+                    <TextBlock Text="{Binding Title}" Margin="5" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="{Binding Artist}" Margin="5" FontStyle="Italic"/>
+                    <TextBlock Text="{Binding Album}" Margin="5"/>
                 </StackPanel>
             </DataTemplate>
         </ListBox.ItemTemplate>

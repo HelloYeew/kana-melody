@@ -29,7 +29,7 @@ public class PlaylistViewModel : ReactiveObject
         set
         {
             this.RaiseAndSetIfChanged(ref _selectedSong, value);
-            _nowPlayingService.PlayMusic(_selectedSong.Path);
+            _nowPlayingService.PlayMusic(_selectedSong);
         }
     }
 }

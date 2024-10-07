@@ -6,8 +6,6 @@ namespace KanaMelody.Models;
 
 public class SongEntry
 {
-    public Bitmap? AlbumCover { get; set; }
-    
     public string Title { get; set; }
     public string Artist { get; set; }
     public string Album { get; set; }
@@ -21,6 +19,5 @@ public class SongEntry
         Title = trackFile.Title;
         Artist = trackFile.Artist;
         Album = trackFile.Album;
-        AlbumCover = trackFile.EmbeddedPictures.Count > 0 ? new Bitmap(new MemoryStream(trackFile.EmbeddedPictures[0].PictureData)) : null;
     }
 }

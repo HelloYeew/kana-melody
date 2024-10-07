@@ -1,4 +1,4 @@
-using System;
+using ATL;
 using KanaMelody.Models;
 using ManagedBass;
 
@@ -36,8 +36,12 @@ public class NowPlayingService
     {
         Bass.ChannelSetPosition(_nowPlaying.SongStream, Bass.ChannelSeconds2Bytes(_nowPlaying.SongStream, position));
     }
-    
-    public void PlayMusic(string path)
+
+    /// <summary>
+    /// Play a tract to the audio device
+    /// </summary>
+    /// <param name="path">The path to the track</param>
+    private void playTrack(string path)
     {
         if (_nowPlaying.SongStream != 0)
         {
@@ -51,10 +55,30 @@ public class NowPlayingService
         }
         Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
         Bass.ChannelPlay(_nowPlaying.SongStream);
-        
-        var tfile = TagLib.File.Create(path);
-        _nowPlaying.Title = tfile.Tag.Title ?? "";
-        _nowPlaying.Artist = tfile.Tag.FirstPerformer ?? "";
-        _nowPlaying.Album = tfile.Tag.Album ?? "";
+    }
+    
+    /// <summary>
+    /// Play a song from a file path that hasn't been loaded yet
+    /// </summary>
+    /// <param name="path">The path to the song</param>
+    public void PlayMusic(string path)
+    {
+        var trackFile = new Track(path);
+        _nowPlaying.Title = trackFile.Title;
+        _nowPlaying.Artist = trackFile.Artist;
+        _nowPlaying.Album = trackFile.Album;
+        playTrack(path);
+    }
+    
+    /// <summary>
+    /// Play a song from the playlist that's already been loaded
+    /// </summary>
+    /// <param name="song">The song to play</param>
+    public void PlayMusic(SongEntry song)
+    {
+        _nowPlaying.Title = song.Title;
+        _nowPlaying.Artist = song.Artist;
+        _nowPlaying.Album = song.Album;
+        playTrack(song.Path);
     }
 }
