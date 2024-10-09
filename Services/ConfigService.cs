@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Text.Json;
 using KanaMelody.Models.Configs;
+using Serilog;
+using Serilog.Core;
 
 namespace KanaMelody.Services;
 
@@ -14,19 +16,19 @@ public class ConfigService
         EnsureStorageSettingsDirectory();
         StorageSettings = LoadStorageSettings();
         // TODO: Use logging
-        Console.WriteLine("⚙ All settings loaded");
+        Log.Information("⚙ All settings loaded");
     }
     
     private static void EnsureStorageSettingsDirectory()
     {
         if (!Directory.Exists(StorageService.STARTER_STORAGE_FOLDER))
         {
-            Console.WriteLine($"Creating storage folder at {StorageService.STARTER_STORAGE_FOLDER}");
+            Log.Information("Creating storage folder at {StarterStorageFolder}", StorageService.STARTER_STORAGE_FOLDER);
             Directory.CreateDirectory(StorageService.STARTER_STORAGE_FOLDER);
         }
         if (!Directory.Exists(StorageService.SETTINGS_FULL_PATH))
         {
-            Console.WriteLine($"Creating settings folder at {StorageService.SETTINGS_FULL_PATH}");
+            Log.Information("Creating settings folder at {SettingsFullPath}", StorageService.SETTINGS_FULL_PATH);
             Directory.CreateDirectory(StorageService.SETTINGS_FULL_PATH);
         }
     }
@@ -37,12 +39,13 @@ public class ConfigService
         {
             string json = File.ReadAllText(StorageService.STORAGE_SETTINGS_FULL_PATH);
             StorageSettings settings = JsonSerializer.Deserialize<StorageSettings>(json) ?? throw new Exception("Failed to deserialize storage settings");
-            Console.WriteLine($"Loaded storage setting from {StorageService.STORAGE_SETTINGS_FILE}");
+            Log.Information("Loaded storage setting from {StorageSettingsFile}", StorageService.STORAGE_SETTINGS_FILE);
+            Log.Information("Storage folder: {StorageFolder}", settings.storageFolder);
             return settings;
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Failed to load storage settings: {e}, creating new settings");
+            Log.Warning("Failed to load storage settings: {E}, creating new settings", e);
             StorageSettings newSettings = StorageSettings.Default;
             SaveStorageSettings(newSettings);
             return newSettings;
@@ -59,7 +62,7 @@ public class ConfigService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Log.Error("Failed to save storage settings: {E}", e);
         }
     }
 
