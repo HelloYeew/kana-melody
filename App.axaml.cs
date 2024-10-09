@@ -24,15 +24,21 @@ public partial class App : Application
         var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
         
         // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
-        Log.Logger = new LoggerConfiguration()
+        var loggerConfig = new LoggerConfiguration()
             .WriteTo.Console(outputTemplate: outputTemplate)
             .WriteTo.File(
                 Path.Combine(StorageService.LOG_FULL_PATH, logFileName),
                 outputTemplate: outputTemplate,
                 retainedFileCountLimit: 20
-            )
-            .CreateLogger();
+            );
         
+#if DEBUG
+        loggerConfig.MinimumLevel.Debug();
+#else
+        loggerConfig.MinimumLevel.Information();
+#endif
+        
+        Log.Logger = loggerConfig.CreateLogger();
         Log.Information("📝 Logger initialized with file: {LogFileName}", logFileName);
         
         AvaloniaXamlLoader.Load(this);
