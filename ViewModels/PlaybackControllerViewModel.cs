@@ -18,7 +18,7 @@ public class PlaybackControllerViewModel : ReactiveObject
     }
     
     public bool IsPlaying => _nowPlayingService.IsPlaying;
-    public string PlayButtonText => IsPlaying ? "Pause" : "Play";
+    public string PlayButtonText => IsPlaying ? "\u23f8" : "\u23f5";
     public string PlayingTitle => $"{_nowPlayingService.Title} - {_nowPlayingService.Artist} ({_nowPlayingService.Album})";
     public double TotalLength => _nowPlayingService.TotalLength;
     public string CurrentPositionString => TimeSpan.FromSeconds(CurrentPosition).ToString(@"mm\:ss");

@@ -23,7 +23,7 @@ public class NowPlayingService
         Bass.ChannelPause(_nowPlaying.SongStream);
     }
     
-    public bool IsPlaying => _nowPlaying.IsPlaying;
+    public bool IsPlaying => Bass.ChannelIsActive(_nowPlaying.SongStream) == PlaybackState.Playing;
     
     public string Title => _nowPlaying.Title;
     public string Artist => _nowPlaying.Artist;
