@@ -21,6 +21,11 @@ public class PlaybackControllerViewModel : ReactiveObject
     public string PlayButtonText => IsPlaying ? "\u23f8" : "\u23f5";
     public string PlayingTitle => $"{_nowPlayingService.Title} - {_nowPlayingService.Artist} ({_nowPlayingService.Album})";
     public double TotalLength => _nowPlayingService.TotalLength;
+    public int Volume
+    {
+        get => _nowPlayingService.Volume;
+        set => _nowPlayingService.Volume = value;
+    }
     public string CurrentPositionString => TimeSpan.FromSeconds(CurrentPosition).ToString(@"mm\:ss");
     public string TotalLengthString => TimeSpan.FromSeconds(TotalLength).ToString(@"mm\:ss");
 
@@ -45,6 +50,7 @@ public class PlaybackControllerViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(TotalLength));
         this.RaisePropertyChanged(nameof(CurrentPositionString));
         this.RaisePropertyChanged(nameof(TotalLengthString));
+        this.RaisePropertyChanged(nameof(Volume));
     }
     
     public void PlayCommand()
@@ -56,5 +62,17 @@ public class PlaybackControllerViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(IsPlaying));
         this.RaisePropertyChanged(nameof(PlayingTitle));
         this.RaisePropertyChanged(nameof(PlayButtonText));
+    }
+    
+    public void MuteCommand()
+    {
+        Volume = 0;
+        this.RaisePropertyChanged(nameof(Volume));
+    }
+    
+    public void UnmuteCommand()
+    {
+        Volume = 100;
+        this.RaisePropertyChanged(nameof(Volume));
     }
 }

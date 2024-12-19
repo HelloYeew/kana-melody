@@ -1,3 +1,4 @@
+using System.Globalization;
 using ATL;
 using KanaMelody.Models;
 using ManagedBass;
@@ -29,6 +30,12 @@ public class NowPlayingService
     public string Artist => _nowPlaying.Artist;
     public string Album => _nowPlaying.Album;
     
+    public int Volume
+    {
+        get => int.Parse((Bass.ChannelGetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume) * 100).ToString(CultureInfo.InvariantCulture));
+        set => Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, value / 100f);
+    }
+    
     public double CurrentPosition => Bass.ChannelBytes2Seconds(_nowPlaying.SongStream, Bass.ChannelGetPosition(_nowPlaying.SongStream));
     public double TotalLength => Bass.ChannelBytes2Seconds(_nowPlaying.SongStream, Bass.ChannelGetLength(_nowPlaying.SongStream));
     
@@ -41,7 +48,7 @@ public class NowPlayingService
     /// Play a tract to the audio device
     /// </summary>
     /// <param name="path">The path to the track</param>
-    private void playTrack(string path)
+    private void PlayTrack(string path)
     {
         if (_nowPlaying.SongStream != 0)
         {
@@ -67,7 +74,7 @@ public class NowPlayingService
         _nowPlaying.Title = trackFile.Title;
         _nowPlaying.Artist = trackFile.Artist;
         _nowPlaying.Album = trackFile.Album;
-        playTrack(path);
+        PlayTrack(path);
     }
     
     /// <summary>
@@ -79,6 +86,6 @@ public class NowPlayingService
         _nowPlaying.Title = song.Title;
         _nowPlaying.Artist = song.Artist;
         _nowPlaying.Album = song.Album;
-        playTrack(song.Path);
+        PlayTrack(song.Path);
     }
 }

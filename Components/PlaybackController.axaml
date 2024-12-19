@@ -7,16 +7,21 @@
              x:Class="KanaMelody.Components.PlaybackController"
              x:DataType="vm:PlaybackControllerViewModel">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
-        <TextBlock Text="{Binding PlayingTitle}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="5"/>
+        <TextBlock Text="{Binding PlayingTitle}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="2"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
             <Button Content="⏮" Width="40" Height="40" Margin="5"/>
-            <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="5"/>
+            <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="2"/>
             <Button Content="⏭" Width="40" Height="40" Margin="5"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
             <TextBlock Text="{Binding CurrentPositionString}" Margin="5"/>
-            <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Width="200" Margin="5"/>
+            <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Width="500" Margin="2"/>
             <TextBlock Text="{Binding TotalLengthString}" Margin="5"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2">
+            <Button Content="🔈" Command="{Binding MuteCommand}" Width="40" Height="40" Margin="5"/>
+            <Slider Minimum="0" Maximum="100" Value="{Binding Volume}" Width="100" Margin="5"/>
+            <Button Content="🔊" Command="{Binding UnmuteCommand}" Width="40" Height="40" Margin="5"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

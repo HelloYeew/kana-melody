@@ -17,7 +17,7 @@
     </Design.DataContext>
     
     <Grid>
-        <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0,0,0,175" />
+        <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0,0,0,250" />
         <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
     </Grid>
 </Window>
