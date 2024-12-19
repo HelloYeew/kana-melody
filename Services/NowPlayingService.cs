@@ -2,6 +2,7 @@ using System.Globalization;
 using ATL;
 using KanaMelody.Models;
 using ManagedBass;
+using Serilog;
 
 namespace KanaMelody.Services;
 
@@ -74,6 +75,7 @@ public class NowPlayingService
         _nowPlaying.Title = trackFile.Title;
         _nowPlaying.Artist = trackFile.Artist;
         _nowPlaying.Album = trackFile.Album;
+        Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(path);
     }
     
@@ -86,6 +88,7 @@ public class NowPlayingService
         _nowPlaying.Title = song.Title;
         _nowPlaying.Artist = song.Artist;
         _nowPlaying.Album = song.Album;
+        Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(song.Path);
     }
 }
