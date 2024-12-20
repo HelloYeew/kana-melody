@@ -23,11 +23,13 @@ public partial class App : Application
         var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
         var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
         
+        StorageService.CleanOldLogFiles();
+        
         // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
         var loggerConfig = new LoggerConfiguration()
             .WriteTo.Console(outputTemplate: outputTemplate)
             .WriteTo.File(
-                Path.Combine(StorageService.LOG_FULL_PATH, logFileName),
+                Path.Combine(StorageService.LogFullPath, logFileName),
                 outputTemplate: outputTemplate,
                 retainedFileCountLimit: 20
             );
@@ -51,8 +53,6 @@ public partial class App : Application
         // Invoke LoadConfig
         ConfigService configService = _services.GetRequiredService<ConfigService>();
     }
-    
-    // TODO: Kanna Logger maybe serilog
     
     private void InitializeAudioManager()
     {

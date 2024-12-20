@@ -12,6 +12,6 @@ public class StorageSettings
     
     public static StorageSettings Default => new StorageSettings
     {
-        storageFolder = Path.Combine(StorageService.STARTER_STORAGE_FOLDER)
+        storageFolder = Path.Combine(StorageService.StarterStorageFolder)
     };
 }

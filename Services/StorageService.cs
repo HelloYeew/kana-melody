@@ -6,15 +6,39 @@ namespace KanaMelody.Services;
 public class StorageService
 {
     // TODO: This should be configurable, save starter in settings
-    public static string STARTER_STORAGE_FOLDER => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KanaMelody");
+    public static string StarterStorageFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KanaMelody");
     
     // Storage settings cannot be changed 
-    public static string SETTINGS_FOLDER => "settings";
-    public static string SETTINGS_FULL_PATH => Path.Combine(STARTER_STORAGE_FOLDER, SETTINGS_FOLDER);
-    public static string STORAGE_SETTINGS_FILE => "settings/storage.json";
-    public static string STORAGE_SETTINGS_FULL_PATH => Path.Combine(STARTER_STORAGE_FOLDER, STORAGE_SETTINGS_FILE);
+    public static string SettingsFolder => "settings";
+    public static string SettingsFullPath => Path.Combine(StarterStorageFolder, SettingsFolder);
+    public static string StorageSettingsFile => "settings/storage.json";
+    public static string StorageSettingsFullPath => Path.Combine(StarterStorageFolder, StorageSettingsFile);
     
     // Log settings cannot be changed
-    public static string LOG_FOLDER => "logs";
-    public static string LOG_FULL_PATH => Path.Combine(STARTER_STORAGE_FOLDER, LOG_FOLDER);
+    public static string LogFolder => "logs";
+    public static string LogFullPath => Path.Combine(StarterStorageFolder, LogFolder);
+    
+    private const int MaxLogFiles = 20;
+    
+    /// <summary>
+    /// Clean up old log files if exceed the limit
+    /// </summary>
+    public static void CleanOldLogFiles()
+    {
+        if (!Directory.Exists(LogFullPath))
+        {
+            Directory.CreateDirectory(LogFullPath);
+        }
+        
+        string[] logFiles = Directory.GetFiles(LogFullPath);
+        
+        if (logFiles.Length > MaxLogFiles)
+        {
+            Array.Sort(logFiles);
+            for (int i = 0; i < logFiles.Length - MaxLogFiles; i++)
+            {
+                File.Delete(logFiles[i]);
+            }
+        }
+    }
 }
