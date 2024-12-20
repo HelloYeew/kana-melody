@@ -22,9 +22,9 @@
                 <Button Content="⏭" Width="40" Height="40" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="{Binding CurrentPositionString}" Margin="5"/>
-                <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Margin="2" MinWidth="500"/>
-                <TextBlock Text="{Binding TotalLengthString}" Margin="5"/>
+                <TextBlock Text="{Binding CurrentPositionString}" Margin="5" MinWidth="50" HorizontalAlignment="Center"/>
+                <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Margin="2" MinWidth="750"/>
+                <TextBlock Text="{Binding TotalLengthString}" Margin="5" MinWidth="50" HorizontalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="2">
                 <Button Content="🔈" Command="{Binding MuteCommand}" Width="40" Height="40" Margin="5"/>
