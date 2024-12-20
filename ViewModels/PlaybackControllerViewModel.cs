@@ -20,7 +20,9 @@ public class PlaybackControllerViewModel : ReactiveObject
     
     public bool IsPlaying => _nowPlayingService.IsPlaying;
     public string PlayButtonText => IsPlaying ? "\u23f8" : "\u23f5";
-    public string PlayingTitle => $"{_nowPlayingService.Title} - {_nowPlayingService.Artist} ({_nowPlayingService.Album})";
+    public string Title => _nowPlayingService.Title;
+    public string Artist => _nowPlayingService.Artist;
+    public string Album => _nowPlayingService.Album;
     public double TotalLength => _nowPlayingService.TotalLength;
     public Bitmap AlbumArt => _nowPlayingService.AlbumArt;
     public double Volume
@@ -46,7 +48,9 @@ public class PlaybackControllerViewModel : ReactiveObject
     {
         _currentPosition = _nowPlayingService.CurrentPosition;
         this.RaisePropertyChanged(nameof(IsPlaying));
-        this.RaisePropertyChanged(nameof(PlayingTitle));
+        this.RaisePropertyChanged(nameof(Title));
+        this.RaisePropertyChanged(nameof(Artist));
+        this.RaisePropertyChanged(nameof(Album));
         this.RaisePropertyChanged(nameof(PlayButtonText));
         this.RaisePropertyChanged(nameof(CurrentPosition));
         this.RaisePropertyChanged(nameof(TotalLength));
@@ -63,7 +67,9 @@ public class PlaybackControllerViewModel : ReactiveObject
         else
             _nowPlayingService.Play();
         this.RaisePropertyChanged(nameof(IsPlaying));
-        this.RaisePropertyChanged(nameof(PlayingTitle));
+        this.RaisePropertyChanged(nameof(Title));
+        this.RaisePropertyChanged(nameof(Artist));
+        this.RaisePropertyChanged(nameof(Album));
         this.RaisePropertyChanged(nameof(PlayButtonText));
     }
     

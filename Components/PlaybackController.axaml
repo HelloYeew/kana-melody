@@ -6,25 +6,31 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="KanaMelody.Components.PlaybackController"
              x:DataType="vm:PlaybackControllerViewModel">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10">
+        <StackPanel Orientation="Horizontal" Margin="5">
             <Image Source="{Binding AlbumArt}" Width="75" Height="75" Margin="5"/>
-            <TextBlock Text="{Binding PlayingTitle}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="2"/>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="2"/>
+                <TextBlock Text="{Binding Artist}" FontSize="16" HorizontalAlignment="Left" Margin="2"/>
+                <TextBlock Text="{Binding Album}" FontSize="16" FontStyle="Italic" HorizontalAlignment="Left" Margin="2"/>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button Content="⏮" Width="40" Height="40" Margin="5"/>
-            <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="2"/>
-            <Button Content="⏭" Width="40" Height="40" Margin="5"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <TextBlock Text="{Binding CurrentPositionString}" Margin="5"/>
-            <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Width="500" Margin="2"/>
-            <TextBlock Text="{Binding TotalLengthString}" Margin="5"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="2">
-            <Button Content="🔈" Command="{Binding MuteCommand}" Width="40" Height="40" Margin="5"/>
-            <Slider Minimum="0" Maximum="100" Value="{Binding Volume}" Width="100" Margin="5"/>
-            <Button Content="🔊" Command="{Binding UnmuteCommand}" Width="40" Height="40" Margin="5"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Content="⏮" Width="40" Height="40" Margin="5"/>
+                <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="2"/>
+                <Button Content="⏭" Width="40" Height="40" Margin="5"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="{Binding CurrentPositionString}" Margin="5"/>
+                <Slider Minimum="0" Maximum="{Binding TotalLength}" Value="{Binding CurrentPosition}" Margin="2" MinWidth="500"/>
+                <TextBlock Text="{Binding TotalLengthString}" Margin="5"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="2">
+                <Button Content="🔈" Command="{Binding MuteCommand}" Width="40" Height="40" Margin="5"/>
+                <Slider Minimum="0" Maximum="100" Value="{Binding Volume}" Width="100" Margin="5"/>
+                <Button Content="🔊" Command="{Binding UnmuteCommand}" Width="40" Height="40" Margin="5"/>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </UserControl>
