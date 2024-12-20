@@ -25,6 +25,7 @@ public class PlaybackControllerViewModel : ReactiveObject
     public string Album => _nowPlayingService.Album;
     public double TotalLength => _nowPlayingService.TotalLength;
     public Bitmap AlbumArt => _nowPlayingService.AlbumArt;
+    public string FileInfo => _nowPlayingService.FileInfo;
     public double Volume
     {
         get => _nowPlayingService.Volume;
@@ -58,6 +59,7 @@ public class PlaybackControllerViewModel : ReactiveObject
         this.RaisePropertyChanged(nameof(TotalLengthString));
         this.RaisePropertyChanged(nameof(Volume));
         this.RaisePropertyChanged(nameof(AlbumArt));
+        this.RaisePropertyChanged(nameof(FileInfo));
     }
     
     public void PlayCommand()

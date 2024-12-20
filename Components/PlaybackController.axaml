@@ -31,6 +31,7 @@
                 <Slider Minimum="0" Maximum="100" Value="{Binding Volume}" Width="100" Margin="5"/>
                 <Button Content="🔊" Command="{Binding UnmuteCommand}" Width="40" Height="40" Margin="5"/>
             </StackPanel>
+            <TextBlock Text="{Binding FileInfo}" Foreground="Gray" VerticalAlignment="Center" Height="20"></TextBlock>
         </StackPanel>
     </StackPanel>
 </UserControl>

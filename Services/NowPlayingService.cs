@@ -32,6 +32,7 @@ public class NowPlayingService
     public string Title => _nowPlaying.Title;
     public string Artist => _nowPlaying.Artist;
     public string Album => _nowPlaying.Album;
+    public string FileInfo = "";
     public Bitmap AlbumArt;
     
     public double Volume
@@ -80,7 +81,7 @@ public class NowPlayingService
         _nowPlaying.Album = trackFile.Album;
         Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(path);
-        UpdateAlbumArt(path);
+        UpdateTrackInfo(path);
     }
     
     /// <summary>
@@ -94,17 +95,17 @@ public class NowPlayingService
         _nowPlaying.Album = song.Album;
         Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(song.Path);
-        UpdateAlbumArt(song.Path);
+        UpdateTrackInfo(song.Path);
     }
     
     /// <summary>
-    /// Update the album art for the currently playing song
+    /// Update the track information from the file that don't need to be record in the database
     /// </summary>
     /// <param name="path">The path to the song</param>
-    private void UpdateAlbumArt(string path)
+    private void UpdateTrackInfo(string path)
     {
         var trackFile = new Track(path);
-
+        FileInfo = $"{trackFile.AudioFormat.ShortName} {trackFile.Bitrate}kbps {trackFile.SampleRate}Hz";
         if (trackFile.EmbeddedPictures.Count > 0)
         {
             var picture = trackFile.EmbeddedPictures[0];
