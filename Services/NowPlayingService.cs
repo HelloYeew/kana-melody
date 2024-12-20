@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.IO;
 using ATL;
+using Avalonia.Media.Imaging;
 using KanaMelody.Models;
 using ManagedBass;
 using Serilog;
@@ -30,10 +32,11 @@ public class NowPlayingService
     public string Title => _nowPlaying.Title;
     public string Artist => _nowPlaying.Artist;
     public string Album => _nowPlaying.Album;
+    public Bitmap AlbumArt;
     
-    public int Volume
+    public double Volume
     {
-        get => int.Parse((Bass.ChannelGetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume) * 100).ToString(CultureInfo.InvariantCulture));
+        get => Bass.ChannelGetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume) * 100;
         set => Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, value / 100f);
     }
     
@@ -77,6 +80,7 @@ public class NowPlayingService
         _nowPlaying.Album = trackFile.Album;
         Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(path);
+        UpdateAlbumArt(path);
     }
     
     /// <summary>
@@ -90,5 +94,28 @@ public class NowPlayingService
         _nowPlaying.Album = song.Album;
         Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(song.Path);
+        UpdateAlbumArt(song.Path);
+    }
+    
+    /// <summary>
+    /// Update the album art for the currently playing song
+    /// </summary>
+    /// <param name="path">The path to the song</param>
+    private void UpdateAlbumArt(string path)
+    {
+        var trackFile = new Track(path);
+
+        if (trackFile.EmbeddedPictures.Count > 0)
+        {
+            var picture = trackFile.EmbeddedPictures[0];
+            using (var ms = new MemoryStream(picture.PictureData))
+            {
+                AlbumArt = new Bitmap(ms);
+            }
+        }
+        else
+        {
+            AlbumArt = null!;
+        }
     }
 }
