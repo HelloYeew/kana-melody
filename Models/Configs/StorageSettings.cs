@@ -1,17 +1,36 @@
+using System.ComponentModel;
 using System.IO;
 using KanaMelody.Services;
-using Serilog;
 
 namespace KanaMelody.Models.Configs;
 
-public class StorageSettings
+public class StorageSettings : INotifyPropertyChanged
 {
-    public string storageFolder { get; set; }
-    
-    public string GetLogFolder() => Path.Combine(storageFolder, "logs");
-    
+    private string _storageFolder;
+    public string StorageFolder
+    {
+        get => _storageFolder;
+        set
+        {
+            if (_storageFolder != value)
+            {
+                _storageFolder = value;
+                OnPropertyChanged(nameof(StorageFolder));
+            }
+        }
+    }
+
+    public string GetLogFolder() => Path.Combine(_storageFolder, "logs");
+
     public static StorageSettings Default => new StorageSettings
     {
-        storageFolder = Path.Combine(StorageService.StarterStorageFolder)
+        StorageFolder = Path.Combine(StorageService.StarterStorageFolder)
     };
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

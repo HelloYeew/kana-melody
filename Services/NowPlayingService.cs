@@ -11,10 +11,13 @@ namespace KanaMelody.Services;
 public class NowPlayingService
 { 
     private readonly NowPlaying _nowPlaying;
+
+    private readonly ConfigService _configService;
     
-    public NowPlayingService()
+    public NowPlayingService(ConfigService configService)
     {
         _nowPlaying = new NowPlaying();
+        _configService = configService;
     }
     
     public void Play()
@@ -37,8 +40,12 @@ public class NowPlayingService
     
     public double Volume
     {
-        get => Bass.ChannelGetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume) * 100;
-        set => Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, value / 100f);
+        get => _configService.PlayerSettings.Volume;
+        set
+        {
+            _configService.PlayerSettings.Volume = value;
+            Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, value / 100f);
+        }
     }
     
     public double CurrentPosition => Bass.ChannelBytes2Seconds(_nowPlaying.SongStream, Bass.ChannelGetPosition(_nowPlaying.SongStream));
@@ -61,6 +68,7 @@ public class NowPlayingService
             Bass.StreamFree(_nowPlaying.SongStream);
         }
         _nowPlaying.SongStream = Bass.CreateStream(path);
+        Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, Volume / 100f);
         if (_nowPlaying.SongStream == 0)
         {
             return;

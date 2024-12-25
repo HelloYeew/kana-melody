@@ -12,7 +12,9 @@ public class StorageService
     public static string SettingsFolder => "settings";
     public static string SettingsFullPath => Path.Combine(StarterStorageFolder, SettingsFolder);
     public static string StorageSettingsFile => "settings/storage.json";
+    public static string PlayerSettingsFile => "settings/player.json";
     public static string StorageSettingsFullPath => Path.Combine(StarterStorageFolder, StorageSettingsFile);
+    public static string PlayerSettingsFullPath => Path.Combine(StarterStorageFolder, PlayerSettingsFile);
     
     // Log settings cannot be changed
     public static string LogFolder => "logs";
