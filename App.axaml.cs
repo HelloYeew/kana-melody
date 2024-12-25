@@ -14,9 +14,11 @@ using Serilog;
 
 namespace KanaMelody;
 
-public partial class App : Application
+public class App : Application
 {
     private IServiceProvider _services = null!;
+    
+    private ConfigService _configService = null!;
     
     public override void Initialize()
     {
@@ -51,7 +53,7 @@ public partial class App : Application
         _services = collection.BuildServiceProvider();
         
         // Invoke LoadConfig
-        ConfigService configService = _services.GetRequiredService<ConfigService>();
+        _configService = _services.GetRequiredService<ConfigService>();
     }
     
     private void InitializeAudioManager()
@@ -80,6 +82,7 @@ public partial class App : Application
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            desktop.Exit += OnExit;
             desktop.MainWindow = new MainWindow
             {
                 DataContext = _services.GetRequiredService<MainWindowViewModel>(),
@@ -90,4 +93,12 @@ public partial class App : Application
         
         Log.Information("✅ Application initialized");
     }
+
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        Log.Information("🚪 Application close signal received");
+        _configService.SaveConfig();
+        Bass.Free();
+        Log.Information("👋 Application exited with code {ExitCode}", e.ApplicationExitCode);
+    } 
 }
