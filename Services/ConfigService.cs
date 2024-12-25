@@ -125,6 +125,7 @@ public class ConfigService : INotifyPropertyChanged
         {
             string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(StorageService.StorageSettingsFullPath, json);
+            Log.Information("Saved storage settings to {StorageSettingsFile}", StorageService.StorageSettingsFile);
         }
         catch (Exception e)
         {
@@ -138,12 +139,21 @@ public class ConfigService : INotifyPropertyChanged
         {
             string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(StorageService.PlayerSettingsFullPath, json);
-            Log.Information("Saved storage settings to {StorageSettingsFile}", StorageService.StorageSettingsFile);
+            Log.Information("Saved player settings to {PlayerSettingsFile}", StorageService.PlayerSettingsFile);
         }
         catch (Exception e)
         {
             Log.Error("Failed to save storage settings: {E}", e);
         }
+    }
+    
+    /// <summary>
+    /// Save all settings
+    /// </summary>
+    public void SaveConfig()
+    {
+        SaveStorageSettings(StorageSettings);
+        SavePlayerSettings(PlayerSettings);
     }
 
     public ConfigService()
