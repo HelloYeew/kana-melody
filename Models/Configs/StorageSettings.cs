@@ -6,8 +6,8 @@ namespace KanaMelody.Models.Configs;
 
 public class StorageSettings : INotifyPropertyChanged
 {
-    private string _storageFolder;
-    public string StorageFolder
+    private string? _storageFolder;
+    public string? StorageFolder
     {
         get => _storageFolder;
         set

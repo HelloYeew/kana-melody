@@ -1,5 +1,3 @@
-using Avalonia.Media.Imaging;
-
 namespace KanaMelody.Models;
 
 public class NowPlaying

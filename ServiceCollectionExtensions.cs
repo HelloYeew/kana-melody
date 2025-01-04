@@ -1,4 +1,3 @@
-using System;
 using KanaMelody.Services;
 using KanaMelody.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
