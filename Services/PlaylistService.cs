@@ -17,4 +17,9 @@ public class PlaylistService
     {
         return _playlist.ToArray();
     }
+    
+    public void ClearPlaylist()
+    {
+        _playlist.Clear();
+    }
 }

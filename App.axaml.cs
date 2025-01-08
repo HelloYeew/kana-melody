@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using KanaMelody.Services;
 using KanaMelody.ViewModels;
 using KanaMelody.Views;
@@ -51,6 +52,7 @@ public class App : Application
         
         var collection = new ServiceCollection();
         collection.AddCommonServices();
+        collection.AddSingleton(this);
         
         _services = collection.BuildServiceProvider();
         
@@ -59,8 +61,9 @@ public class App : Application
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
     }
     
-    private async void ShowFolderSelectionDialog()
+    public async void ShowFolderSelectionDialog()
     {
+        // TODO: Change this API to new WIndow API
         var dialog = new OpenFolderDialog
         {
             Title = "Select Start Folder"

@@ -36,6 +36,7 @@ public class PlaylistViewModel : ReactiveObject
     /// </summary>
     public void ScanAllFolder()
     {
+        _playlistService.ClearPlaylist();
         foreach (var folderPath in _configService.FolderSettings.FolderPath)
         {
             foreach (var path in SongEntryServices.GetAllSongs(folderPath))
