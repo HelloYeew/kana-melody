@@ -18,6 +18,12 @@ public class NowPlayingService
     {
         _nowPlaying = new NowPlaying();
         _configService = configService;
+        if (configService.PlayerSettings.LatestSongPath != string.Empty)
+        {
+            PlayMusic(configService.PlayerSettings.LatestSongPath);
+            Pause();
+            Log.Information("🎵 Found latest song path, set current song to {Path}", configService.PlayerSettings.LatestSongPath);
+        }
     }
     
     public void Play()
@@ -75,6 +81,7 @@ public class NowPlayingService
         }
         Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
         Bass.ChannelPlay(_nowPlaying.SongStream);
+        _configService.PlayerSettings.LatestSongPath = path;
     }
     
     /// <summary>
