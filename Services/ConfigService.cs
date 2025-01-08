@@ -91,6 +91,7 @@ public class ConfigService : INotifyPropertyChanged
         EnsureStorageSettingsDirectory();
         StorageSettings = LoadStorageSettings();
         PlayerSettings = LoadPlayerSettings();
+        FolderSettings = LoadFolderSettings();
         Log.Information("⚙ All settings loaded");
     }
     
@@ -212,6 +213,7 @@ public class ConfigService : INotifyPropertyChanged
     {
         SaveStorageSettings(StorageSettings);
         SavePlayerSettings(PlayerSettings);
+        SaveFolderSettings(FolderSettings);
     }
 
     public ConfigService()

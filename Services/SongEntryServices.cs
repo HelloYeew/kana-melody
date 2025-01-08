@@ -4,7 +4,6 @@ namespace KanaMelody.Services;
 
 public class SongEntryServices
 {
-    public static string Path = "/Users/helloyeew/Music/Personal";
     private static string[] _extensions = { ".mp3", ".wav", ".flac", ".ogg" , ".m4a" };
 
     public static string[] GetAllSongs(string path)

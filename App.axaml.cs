@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using KanaMelody.Services;
@@ -19,6 +20,7 @@ public class App : Application
     private IServiceProvider _services = null!;
     
     private ConfigService _configService = null!;
+    private PlaylistViewModel _playlistViewModel = null!;
     
     public override void Initialize()
     {
@@ -54,6 +56,28 @@ public class App : Application
         
         // Invoke LoadConfig
         _configService = _services.GetRequiredService<ConfigService>();
+        _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+    }
+    
+    private async void ShowFolderSelectionDialog()
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select Start Folder"
+        };
+
+        var mainWindow = (Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        var result = await dialog.ShowAsync(mainWindow);
+
+        if (!string.IsNullOrEmpty(result))
+        {
+            _configService.FolderSettings.FolderPath = new[]
+            {
+                result
+            };
+            _playlistViewModel.ScanAllFolder();
+            _configService.SaveConfig();
+        }
     }
     
     private void InitializeAudioManager()
@@ -92,6 +116,11 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
         
         Log.Information("✅ Application initialized");
+        
+        if (_configService.FolderSettings.FolderPath.Length == 0)
+        {
+            ShowFolderSelectionDialog();
+        }
     }
 
     private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
