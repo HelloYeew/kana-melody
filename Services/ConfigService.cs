@@ -2,6 +2,9 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using KanaMelody.Models.Configs;
 using Serilog;
 
@@ -42,6 +45,24 @@ public class ConfigService : INotifyPropertyChanged
             SavePlayerSettings(_playerSettings);
         }
     }
+    
+    private FolderSettings _folderSettings;
+    
+    public FolderSettings FolderSettings
+    {
+        get => _folderSettings;
+        set
+        {
+            if (_folderSettings != null)
+            {
+                _folderSettings.PropertyChanged -= OnFolderSettingsChanged;
+            }
+            _folderSettings = value;
+            _folderSettings.PropertyChanged += OnFolderSettingsChanged;
+            OnPropertyChanged(nameof(FolderSettings));
+            SaveFolderSettings(_folderSettings);
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -58,6 +79,11 @@ public class ConfigService : INotifyPropertyChanged
     private void OnPlayerSettingsChanged(object? sender, PropertyChangedEventArgs e)
     {
         SavePlayerSettings(PlayerSettings);
+    }
+    
+    private void OnFolderSettingsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        SaveFolderSettings(FolderSettings);
     }
 
     public void LoadConfig()
@@ -119,6 +145,24 @@ public class ConfigService : INotifyPropertyChanged
         }
     }
     
+    public static FolderSettings LoadFolderSettings()
+    {
+        try
+        {
+            string json = File.ReadAllText(StorageService.FolderSettingsFullPath);
+            FolderSettings settings = JsonSerializer.Deserialize<FolderSettings>(json) ?? throw new Exception("Failed to deserialize folder settings");
+            Log.Information("Loaded folder setting from {FolderSettingsFile}", StorageService.FolderSettingsFile);
+            return settings;
+        }
+        catch (Exception e)
+        {
+            Log.Warning("Failed to load folder settings: {E}, creating new settings", e);
+            FolderSettings newSettings = FolderSettings.Default;
+            SaveFolderSettings(newSettings);
+            return newSettings;
+        }
+    }
+    
     public static void SaveStorageSettings(StorageSettings settings)
     {
         try
@@ -144,6 +188,20 @@ public class ConfigService : INotifyPropertyChanged
         catch (Exception e)
         {
             Log.Error("Failed to save storage settings: {E}", e);
+        }
+    }
+    
+    public static void SaveFolderSettings(FolderSettings settings)
+    {
+        try
+        {
+            string json = JsonSerializer.Serialize(settings);
+            File.WriteAllText(StorageService.FolderSettingsFullPath, json);
+            Log.Information("Saved folder settings to {FolderSettingsFile}", StorageService.FolderSettingsFile);
+        }
+        catch (Exception e)
+        {
+            Log.Error("Failed to save folder settings: {E}", e);
         }
     }
     

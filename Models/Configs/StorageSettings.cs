@@ -4,6 +4,9 @@ using KanaMelody.Services;
 
 namespace KanaMelody.Models.Configs;
 
+/// <summary>
+/// Main storage settings for the application. This setting should not be moved with other settings for startup logic.
+/// </summary>
 public class StorageSettings : INotifyPropertyChanged
 {
     private string? _storageFolder;

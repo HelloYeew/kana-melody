@@ -16,8 +16,21 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
-    <Grid>
-        <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" />
-        <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open..."/>
+                <Separator/>
+                <MenuItem Header="_Exit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Copy"/>
+                <MenuItem Header="Paste"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" />
+            <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+        </Grid>
+    </DockPanel>
 </Window>
