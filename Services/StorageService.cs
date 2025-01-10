@@ -1,11 +1,12 @@
 using System;
 using System.IO;
+using KanaMelody.Development;
 
 namespace KanaMelody.Services;
 
 public class StorageService
 {
-    public static string StarterStorageFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KanaMelody");
+    public static string StarterStorageFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DebugUtils.IsDebugBuild ? "KanaMelodyDevelopment" : "KanaMelody");
     
     // Storage settings cannot be changed 
     public static string SettingsFolder => "settings";
