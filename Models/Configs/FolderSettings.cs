@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using Serilog;
 
 namespace KanaMelody.Models.Configs;
 
@@ -18,6 +19,7 @@ public class FolderSettings : INotifyPropertyChanged
         set
         {
             _folderPath = value;
+            Log.Information("📁 Folder path changed to {FolderPath}", _folderPath);
             OnPropertyChanged(nameof(FolderPath));
         }
     }
