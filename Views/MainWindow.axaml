@@ -21,11 +21,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Select new folder..." Command="{Binding SelectNewFolderCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Exit"/>
-            </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="Copy"/>
-                <MenuItem Header="Paste"/>
+                <MenuItem Header="_Exit" Command="{Binding ExitApplicationCommand}"/>
             </MenuItem>
         </Menu>
         <Grid>

@@ -1,4 +1,4 @@
-﻿using KanaMelody.Services;
+﻿using System;
 
 namespace KanaMelody.ViewModels;
 
@@ -19,5 +19,10 @@ public class MainWindowViewModel : ViewModelBase
     public void SelectNewFolderCommand()
     {
         _mainApp.ShowFolderSelectionDialog();
+    }
+    
+    public void ExitApplicationCommand()
+    {
+        Environment.Exit(0);
     }
 }
