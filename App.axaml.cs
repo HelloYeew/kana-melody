@@ -1,10 +1,11 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Platform.Storage;
+using KanaMelody.Development;
 using KanaMelody.Services;
 using KanaMelody.ViewModels;
 using KanaMelody.Views;
@@ -47,8 +48,12 @@ public class App : Application
         
         Log.Logger = loggerConfig.CreateLogger();
         Log.Information("📝 Logger initialized with file: {LogFileName}", logFileName);
-        
-        AvaloniaXamlLoader.Load(this);
+
+        Log.Information("------------------------------------");
+        Log.Information("Log for KanaMelody {Version} (Debug: {IsDebug})", DebugUtils.GetVersion(), DebugUtils.IsDebugBuild);
+        Log.Information("Framework : {Framework}", RuntimeInformation.FrameworkDescription);
+        Log.Information("Environment: {RuntimeInfo} ({OSVersion}), {ProcessorCount} cores {Architecture}", RuntimeInfo.OS, Environment.OSVersion, Environment.ProcessorCount, RuntimeInformation.OSArchitecture);
+        Log.Information("------------------------------------");
         
         var collection = new ServiceCollection();
         collection.AddCommonServices();
@@ -59,6 +64,8 @@ public class App : Application
         // Invoke LoadConfig
         _configService = _services.GetRequiredService<ConfigService>();
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+        
+        AvaloniaXamlLoader.Load(this);
     }
     
     public async void ShowFolderSelectionDialog()
