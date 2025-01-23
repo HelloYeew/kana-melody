@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using KanaMelody.Database;
 using KanaMelody.Development;
 using KanaMelody.Services;
 using KanaMelody.ViewModels;
@@ -64,6 +65,8 @@ public class App : Application
         // Invoke LoadConfig
         _configService = _services.GetRequiredService<ConfigService>();
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+        
+        var databaseContext = new SongDatabaseContext(_configService.StorageSettings);
         
         AvaloniaXamlLoader.Load(this);
     }

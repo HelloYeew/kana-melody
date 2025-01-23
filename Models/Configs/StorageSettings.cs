@@ -24,6 +24,7 @@ public class StorageSettings : INotifyPropertyChanged
     }
 
     public string GetLogFolder() => Path.Combine(_storageFolder, "logs");
+    public string GetDatabaseLocation() => Path.Combine(_storageFolder, "song.db");
 
     public static StorageSettings Default => new StorageSettings
     {
