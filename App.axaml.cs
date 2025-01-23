@@ -24,6 +24,7 @@ public class App : Application
     
     private ConfigService _configService = null!;
     private PlaylistViewModel _playlistViewModel = null!;
+    private MainWindowViewModel _mainWindowViewModel = null!;
     
     public override void Initialize()
     {
@@ -57,16 +58,36 @@ public class App : Application
         Log.Information("------------------------------------");
         
         var collection = new ServiceCollection();
-        collection.AddCommonServices();
-        collection.AddSingleton(this);
+        
+        // Config service
+        collection.LoadSingleton<NowPlayingService>();
+        collection.LoadSingleton<PlaylistService>();
+        collection.LoadSingleton<ConfigService>();
+        
+        // Component view model
+        collection.LoadSingleton<PlaylistViewModel>();
+        collection.LoadSingleton<PlaybackControllerViewModel>();
         
         _services = collection.BuildServiceProvider();
-        
-        // Invoke LoadConfig
         _configService = _services.GetRequiredService<ConfigService>();
+        // TODO: Remove this after Kana completely rely on database
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
         
+        // Database
         var databaseContext = new SongDatabaseContext(_configService.StorageSettings);
+        collection.AddSingleton(databaseContext);
+        collection.LoadSingleton<DatabaseService>();
+        
+        // App
+        collection.AddSingleton(this);
+        
+        // Windows view model
+        collection.LoadSingleton<MainWindowViewModel>();
+        
+        _services = collection.BuildServiceProvider();
+        _mainWindowViewModel = _services.GetRequiredService<MainWindowViewModel>();
+        
+        Log.Information("✅ All services added");
         
         AvaloniaXamlLoader.Load(this);
     }
@@ -122,7 +143,7 @@ public class App : Application
             desktop.Exit += OnExit;
             desktop.MainWindow = new MainWindow
             {
-                DataContext = _services.GetRequiredService<MainWindowViewModel>(),
+                DataContext = _mainWindowViewModel
             };
         }
 

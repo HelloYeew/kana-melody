@@ -2,6 +2,7 @@
 using KanaMelody.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KanaMelody.Migrations
 {
     [DbContext(typeof(SongDatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250123092018_AutoIncrementKey")]
+    partial class AutoIncrementKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
@@ -38,18 +41,21 @@ namespace KanaMelody.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Album")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Artist")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SongId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TrackNumber")
+                    b.Property<int>("TrackNumber")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

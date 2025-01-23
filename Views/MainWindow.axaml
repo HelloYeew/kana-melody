@@ -23,6 +23,9 @@
                 <Separator/>
                 <MenuItem Header="_Exit" Command="{Binding ExitApplicationCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Database">
+                <MenuItem Header="_Rebuild database" Command="{Binding RebuildDatabaseCommand}"/>
+            </MenuItem>
         </Menu>
         <Grid>
             <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" />

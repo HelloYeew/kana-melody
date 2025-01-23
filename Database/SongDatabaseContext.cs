@@ -18,7 +18,7 @@ public sealed class SongDatabaseContext : DbContext
     {
         DbPath = storageSettings.GetDatabaseLocation();
 
-        // Database.EnsureCreated();
+        Database.EnsureCreated();
         
         Log.Information("Database found at {DbPath}", DbPath);
         // Check if there are any pending migrations
