@@ -10,6 +10,7 @@ public class SongEntry
     public string Artist { get; set; }
     public string Album { get; set; }
     public int? TrackNumber { get; set; }
+    public int? DiscNumber { get; set; }
     
     public string Path { get; set; }
 
@@ -21,5 +22,6 @@ public class SongEntry
         Artist = trackFile.Artist;
         Album = trackFile.Album;
         TrackNumber = trackFile.TrackNumber ?? 0;
+        DiscNumber = trackFile.DiscNumber ?? 0;
     }
 }
