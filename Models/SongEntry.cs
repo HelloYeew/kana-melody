@@ -9,6 +9,7 @@ public class SongEntry
     public string Title { get; set; }
     public string Artist { get; set; }
     public string Album { get; set; }
+    public int? TrackNumber { get; set; }
     
     public string Path { get; set; }
 
@@ -19,5 +20,6 @@ public class SongEntry
         Title = trackFile.Title;
         Artist = trackFile.Artist;
         Album = trackFile.Album;
+        TrackNumber = trackFile.TrackNumber ?? 0;
     }
 }

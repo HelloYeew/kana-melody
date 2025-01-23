@@ -1,6 +1,7 @@
 using KanaMelody.Models;
 using KanaMelody.Services;
 using ReactiveUI;
+using Serilog;
 
 namespace KanaMelody.ViewModels;
 
@@ -44,6 +45,7 @@ public class PlaylistViewModel : ReactiveObject
                 _playlistService.AddSong(new SongEntry(path));
             }
         }
+        _playlistService.SortPlaylist();
         this.RaisePropertyChanged(nameof(Playlist));
     }
 }
