@@ -27,9 +27,10 @@
                 <MenuItem Header="_Rebuild database" Command="{Binding RebuildDatabaseCommand}"/>
             </MenuItem>
         </Menu>
-        <Grid>
+        <Grid Margin="0,0,0,10">
             <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" />
             <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+            <components:StatusBar DataContext="{Binding StatusBarViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
         </Grid>
     </DockPanel>
 </Window>

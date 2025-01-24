@@ -8,16 +8,18 @@ public class MainWindowViewModel : ViewModelBase
     private readonly App _mainApp;
     private readonly DatabaseService _databaseService;
     
-    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, App app, DatabaseService databaseService)
+    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, StatusBarViewModel statusBarViewModel, App app, DatabaseService databaseService)
     {
         PlaybackControllerViewModel = playbackControllerViewModel;
         PlaylistViewModel = playlistViewModel;
+        StatusBarViewModel = statusBarViewModel;
         _databaseService = databaseService;
         _mainApp = app;
     }
     
     public PlaybackControllerViewModel PlaybackControllerViewModel { get; }
     public PlaylistViewModel PlaylistViewModel { get; }
+    public StatusBarViewModel StatusBarViewModel { get; }
     
     public void SelectNewFolderCommand()
     {

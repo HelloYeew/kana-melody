@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using KanaMelody.Database;
 using KanaMelody.Development;
 using KanaMelody.Services;
+using KanaMelody.Utilities;
 using KanaMelody.ViewModels;
 using KanaMelody.Views;
 using ManagedBass;
@@ -25,39 +26,19 @@ public class App : Application
     private ConfigService _configService = null!;
     private PlaylistViewModel _playlistViewModel = null!;
     private MainWindowViewModel _mainWindowViewModel = null!;
+    private StatusBarViewModel _statusBarViewModel = null!;
+    
+    private LoggerConfiguration _loggerConfiguration = null!;
     
     public override void Initialize()
     {
-        var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
-        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
-        
-        StorageService.CleanOldLogFiles();
-        
-        // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
-        var loggerConfig = new LoggerConfiguration()
-            .WriteTo.Console(outputTemplate: outputTemplate)
-            .WriteTo.File(
-                Path.Combine(StorageService.LogFullPath, logFileName),
-                outputTemplate: outputTemplate,
-                retainedFileCountLimit: 20
-            );
-        
-#if DEBUG
-        loggerConfig.MinimumLevel.Debug();
-#else
-        loggerConfig.MinimumLevel.Information();
-#endif
-        
-        Log.Logger = loggerConfig.CreateLogger();
-        Log.Information("📝 Logger initialized with file: {LogFileName}", logFileName);
-
-        Log.Information("------------------------------------");
-        Log.Information("Log for KanaMelody {Version} (Debug: {IsDebug})", DebugUtils.GetVersion(), DebugUtils.IsDebugBuild);
-        Log.Information("Framework : {Framework}", RuntimeInformation.FrameworkDescription);
-        Log.Information("Environment: {RuntimeInfo} ({OSVersion}), {ProcessorCount} cores {Architecture}", RuntimeInfo.OS, Environment.OSVersion, Environment.ProcessorCount, RuntimeInformation.OSArchitecture);
-        Log.Information("------------------------------------");
+        // Status bar view model need to be initialized first before initialize logger
+        _statusBarViewModel = new StatusBarViewModel();
+        SetupLogging();
+        InitializeLogger();
         
         var collection = new ServiceCollection();
+        collection.AddSingleton(_statusBarViewModel);
         
         // Config service
         collection.LoadSingleton<NowPlayingService>();
@@ -68,10 +49,12 @@ public class App : Application
         collection.LoadSingleton<PlaylistViewModel>();
         collection.LoadSingleton<PlaybackControllerViewModel>();
         
+        
         _services = collection.BuildServiceProvider();
         _configService = _services.GetRequiredService<ConfigService>();
         // TODO: Remove this after Kana completely rely on database
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+        _statusBarViewModel = _services.GetRequiredService<StatusBarViewModel>();
         
         // Database
         var databaseContext = new SongDatabaseContext(_configService.StorageSettings);
@@ -163,5 +146,47 @@ public class App : Application
         _configService.SaveConfig();
         Bass.Free();
         Log.Information("👋 Application exited with code {ExitCode}", e.ApplicationExitCode);
-    } 
+    }
+
+    /// <summary>
+    /// Setup the logger configuration.
+    /// </summary>
+    private void SetupLogging()
+    {
+        var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
+        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
+        
+        StorageService.CleanOldLogFiles();
+        
+        // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
+        _loggerConfiguration = new LoggerConfiguration()
+            .WriteTo.Console(outputTemplate: outputTemplate)
+            .WriteTo.Sink(new StatusBarLogSink(_statusBarViewModel))
+            .WriteTo.File(
+                Path.Combine(StorageService.LogFullPath, logFileName),
+                outputTemplate: outputTemplate,
+                retainedFileCountLimit: 20
+            );
+        
+#if DEBUG
+        _loggerConfiguration.MinimumLevel.Debug();
+#else
+        _loggerConfiguration.MinimumLevel.Information();
+#endif
+        
+        
+    }
+
+    /// <summary>
+    /// Initialize the logger with the configuration and write the initial log.
+    /// </summary>
+    public void InitializeLogger()
+    {
+        Log.Logger = _loggerConfiguration.CreateLogger();
+        Log.Information("------------------------------------");
+        Log.Information("Log for KanaMelody {Version} (Debug: {IsDebug})", DebugUtils.GetVersion(), DebugUtils.IsDebugBuild);
+        Log.Information("Framework : {Framework}", RuntimeInformation.FrameworkDescription);
+        Log.Information("Environment: {RuntimeInfo} ({OSVersion}), {ProcessorCount} cores {Architecture}", RuntimeInfo.OS, Environment.OSVersion, Environment.ProcessorCount, RuntimeInformation.OSArchitecture);
+        Log.Information("------------------------------------");
+    }
 }
