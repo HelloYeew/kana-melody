@@ -19,6 +19,11 @@ public class SongMetadata
     /// <returns></returns>
     public int? TrackNumber { get; set; } = 0;
     
+    /// <summary>
+    /// Order of the disc in the album
+    /// </summary>
+    public int? DiscNumber { get; set; } = 0;
+    
     public int SongId { get; set; }
     public Song Song { get; set; } = null!;
 }

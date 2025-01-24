@@ -1,6 +1,4 @@
-using System.IO;
 using ATL;
-using Avalonia.Media.Imaging;
 
 namespace KanaMelody.Models;
 
