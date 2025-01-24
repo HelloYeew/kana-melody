@@ -8,10 +8,11 @@ public class MainWindowViewModel : ViewModelBase
     private readonly App _mainApp;
     private readonly DatabaseService _databaseService;
     
-    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, StatusBarViewModel statusBarViewModel, App app, DatabaseService databaseService)
+    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, StatusBarViewModel statusBarViewModel, TrackListViewModel trackListViewModel, App app, DatabaseService databaseService)
     {
         PlaybackControllerViewModel = playbackControllerViewModel;
         PlaylistViewModel = playlistViewModel;
+        TrackListViewModel = trackListViewModel;
         StatusBarViewModel = statusBarViewModel;
         _databaseService = databaseService;
         _mainApp = app;
@@ -19,6 +20,7 @@ public class MainWindowViewModel : ViewModelBase
     
     public PlaybackControllerViewModel PlaybackControllerViewModel { get; }
     public PlaylistViewModel PlaylistViewModel { get; }
+    public TrackListViewModel TrackListViewModel { get; }
     public StatusBarViewModel StatusBarViewModel { get; }
     
     public void SelectNewFolderCommand()
@@ -28,7 +30,8 @@ public class MainWindowViewModel : ViewModelBase
     
     public void RebuildDatabaseCommand()
     {
-        _databaseService.UpdateSongEntry(true);
+        _databaseService.UpdateSongEntry();
+        TrackListViewModel.UpdateTrackList();
     }
     
     public void ExitApplicationCommand()

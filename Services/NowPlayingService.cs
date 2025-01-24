@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.IO;
 using ATL;
 using Avalonia.Media.Imaging;
@@ -103,11 +102,11 @@ public class NowPlayingService
     /// Play a song from the playlist that's already been loaded
     /// </summary>
     /// <param name="song">The song to play</param>
-    public void PlayMusic(SongEntry song)
+    public void PlayMusic(Song song)
     {
-        _nowPlaying.Title = song.Title;
-        _nowPlaying.Artist = song.Artist;
-        _nowPlaying.Album = song.Album;
+        _nowPlaying.Title = song.Metadata.Title;
+        _nowPlaying.Artist = song.Metadata.Artist;
+        _nowPlaying.Album = song.Metadata.Album;
         Log.Information("🎵 Playing {Title} by {Artist} from {Album}", _nowPlaying.Title, _nowPlaying.Artist, _nowPlaying.Album);
         PlayTrack(song.Path);
         UpdateTrackInfo(song.Path);

@@ -27,6 +27,11 @@ public class App : Application
     private PlaylistViewModel _playlistViewModel = null!;
     private MainWindowViewModel _mainWindowViewModel = null!;
     private StatusBarViewModel _statusBarViewModel = null!;
+    private TrackListViewModel _trackListViewModel = null!;
+    
+    private SongDatabaseContext _songDatabaseContext = null!;
+    
+    private DatabaseService _databaseService = null!;
     
     private LoggerConfiguration _loggerConfiguration = null!;
     
@@ -41,25 +46,27 @@ public class App : Application
         collection.AddSingleton(_statusBarViewModel);
         
         // Config service
+        _configService = new ConfigService();
+        collection.AddSingleton(_configService);
         collection.LoadSingleton<NowPlayingService>();
         collection.LoadSingleton<PlaylistService>();
-        collection.LoadSingleton<ConfigService>();
+        
+        // Database
+        _songDatabaseContext = new SongDatabaseContext(_configService.StorageSettings);
+        collection.AddSingleton(_songDatabaseContext);
+        collection.LoadSingleton<DatabaseService>();
         
         // Component view model
         collection.LoadSingleton<PlaylistViewModel>();
         collection.LoadSingleton<PlaybackControllerViewModel>();
+        collection.LoadSingleton<TrackListViewModel>();
         
-        
-        _services = collection.BuildServiceProvider();
-        _configService = _services.GetRequiredService<ConfigService>();
         // TODO: Remove this after Kana completely rely on database
+        _services = collection.BuildServiceProvider();
         _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
         _statusBarViewModel = _services.GetRequiredService<StatusBarViewModel>();
-        
-        // Database
-        var databaseContext = new SongDatabaseContext(_configService.StorageSettings);
-        collection.AddSingleton(databaseContext);
-        collection.LoadSingleton<DatabaseService>();
+        _trackListViewModel = _services.GetRequiredService<TrackListViewModel>();
+        _databaseService = _services.GetRequiredService<DatabaseService>();
         
         // App
         collection.AddSingleton(this);
@@ -92,8 +99,9 @@ public class App : Application
             {
                 result
             };
-            _playlistViewModel.ScanAllFolder();
             _configService.SaveConfig();
+            _databaseService.UpdateSongEntry(true);
+            _trackListViewModel.UpdateTrackList();
         }
     }
     

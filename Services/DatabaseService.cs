@@ -3,7 +3,6 @@ using System.Linq;
 using ATL;
 using KanaMelody.Database;
 using KanaMelody.Models;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace KanaMelody.Services;
@@ -33,7 +32,7 @@ public class DatabaseService
             {
                 Log.Information("Processing song {SongPath}", songPath);
                 // Find the song in the database
-                var song = _songDatabaseContext.Songs.Include(song => song.Metadata).FirstOrDefault(s => s.Path == songPath);
+                var song = _songDatabaseContext.Songs.FirstOrDefault(s => s.Path == songPath);
                 if (song == null)
                 {
                     try
@@ -60,6 +59,7 @@ public class DatabaseService
                 }
                 else
                 {
+                    _songDatabaseContext.Entry(song).Reference(s => s.Metadata).Load();
                     if (forceUpdate)
                     {
                         try
