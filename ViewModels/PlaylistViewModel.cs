@@ -1,7 +1,6 @@
 using KanaMelody.Models;
 using KanaMelody.Services;
 using ReactiveUI;
-using Serilog;
 
 namespace KanaMelody.ViewModels;
 

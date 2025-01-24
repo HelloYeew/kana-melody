@@ -1,6 +1,4 @@
-using System;
 using ReactiveUI;
-using Serilog;
 
 namespace KanaMelody.ViewModels;
 
