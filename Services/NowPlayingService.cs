@@ -26,6 +26,7 @@ public class NowPlayingService
             PlayMusic(configService.PlayerSettings.LatestSongPath);
             Log.Information("🎵 Found latest song path, set current song to {Path}", configService.PlayerSettings.LatestSongPath);
         }
+        loop = configService.PlayerSettings.Loop;
     }
     
     public void Play()
@@ -96,6 +97,7 @@ public class NowPlayingService
                     Next();
                 });
             }
+            _configService.PlayerSettings.Loop = loop;
         }
     }
     
