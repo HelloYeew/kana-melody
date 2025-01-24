@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using ATL;
 using Avalonia.Media.Imaging;
@@ -12,17 +13,26 @@ public class NowPlayingService
     private readonly NowPlaying _nowPlaying;
 
     private readonly ConfigService _configService;
+    private readonly PlaylistService _playlistService;
     
-    public NowPlayingService(ConfigService configService)
+    private bool loop;
+    
+    public NowPlayingService(ConfigService configService, PlaylistService playlistService)
     {
         _nowPlaying = new NowPlaying();
         _configService = configService;
+        _playlistService = playlistService;
         if (configService.PlayerSettings.LatestSongPath != string.Empty)
         {
             PlayMusic(configService.PlayerSettings.LatestSongPath);
             Pause();
             Log.Information("🎵 Found latest song path, set current song to {Path}", configService.PlayerSettings.LatestSongPath);
         }
+        // Add event listener for when the song ends
+        Bass.ChannelSetSync(_nowPlaying.SongStream, SyncFlags.End, 0, (handle, channel, data, user) =>
+        {
+            Next();
+        }, IntPtr.Zero);
     }
     
     public void Play()
@@ -35,7 +45,51 @@ public class NowPlayingService
         Bass.ChannelPause(_nowPlaying.SongStream);
     }
     
+    public void Next()
+    {
+        if (_playlistService.CurrentIndex + 1 < _playlistService.GetPlaylist().Length)
+        {
+            _playlistService.CurrentIndex++;
+            PlayMusic(_playlistService.GetPlaylist()[_playlistService.CurrentIndex]);
+        }
+        else
+        {
+            _playlistService.CurrentIndex = 0;
+            PlayMusic(_playlistService.GetPlaylist()[_playlistService.CurrentIndex]);
+        }
+    }
+    
+    public void Previous()
+    {
+        if (_playlistService.CurrentIndex - 1 >= 0)
+        {
+            _playlistService.CurrentIndex--;
+            PlayMusic(_playlistService.GetPlaylist()[_playlistService.CurrentIndex]);
+        }
+        else
+        {
+            _playlistService.CurrentIndex = _playlistService.GetPlaylist().Length - 1;
+            PlayMusic(_playlistService.GetPlaylist()[_playlistService.CurrentIndex]);
+        }
+    }
+    
     public bool IsPlaying => Bass.ChannelIsActive(_nowPlaying.SongStream) == PlaybackState.Playing;
+    public bool IsLooping
+    {
+        get => loop;
+        set
+        {
+            loop = value;
+            if (loop)
+            {
+                Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
+            }
+            else
+            {
+                Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Default);
+            }
+        }
+    }
     
     public string Title => _nowPlaying.Title;
     public string Artist => _nowPlaying.Artist;
@@ -78,7 +132,6 @@ public class NowPlayingService
         {
             return;
         }
-        Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
         Bass.ChannelPlay(_nowPlaying.SongStream);
         _configService.PlayerSettings.LatestSongPath = path;
     }
