@@ -17,9 +17,9 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <Button Content="⏮" Command="{Binding NextCommand}" Width="40" Height="40" Margin="5"/>
+                <Button Content="⏮" Command="{Binding PreviousCommand}" Width="40" Height="40" Margin="5"/>
                 <Button Content="{Binding PlayButtonText}" Command="{Binding PlayCommand}" Width="40" Height="40" Margin="2"/>
-                <Button Content="⏭" Command="{Binding PreviousCommand}" Width="40" Height="40" Margin="5"/>
+                <Button Content="⏭" Command="{Binding NextCommand}" Width="40" Height="40" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="{Binding CurrentPositionString}" Margin="5" MinWidth="50" HorizontalAlignment="Center"/>
