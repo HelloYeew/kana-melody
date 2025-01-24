@@ -30,7 +30,10 @@
         <Grid>
             <Grid ColumnDefinitions="*,300">
                 <components:TrackList DataContext="{Binding TrackListViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20,20,200" Grid.Row="0" Grid.Column="0"/>
-                <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" Background="Gray" Grid.Row="0" Grid.Column="1"/>
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="Playlist" FontSize="16" FontWeight="Bold" Margin="0,0,20,10"/>
+                    <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0, 10 ,20,200"/>
+                </StackPanel>
             </Grid>
             <Grid>
                 <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0,0,0,10" />
