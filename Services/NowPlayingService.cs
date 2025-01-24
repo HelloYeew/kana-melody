@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using ATL;
 using Avalonia.Media.Imaging;
@@ -25,14 +24,8 @@ public class NowPlayingService
         if (configService.PlayerSettings.LatestSongPath != string.Empty)
         {
             PlayMusic(configService.PlayerSettings.LatestSongPath);
-            Pause();
             Log.Information("🎵 Found latest song path, set current song to {Path}", configService.PlayerSettings.LatestSongPath);
         }
-        // Add event listener for when the song ends
-        Bass.ChannelSetSync(_nowPlaying.SongStream, SyncFlags.End, 0, (handle, channel, data, user) =>
-        {
-            Next();
-        }, IntPtr.Zero);
     }
     
     public void Play()
@@ -47,6 +40,10 @@ public class NowPlayingService
     
     public void Next()
     {
+        if (_playlistService.GetPlaylist().Length == 0)
+        {
+            return;
+        }
         if (_playlistService.CurrentIndex + 1 < _playlistService.GetPlaylist().Length)
         {
             _playlistService.CurrentIndex++;
@@ -61,6 +58,10 @@ public class NowPlayingService
     
     public void Previous()
     {
+        if (_playlistService.GetPlaylist().Length == 0)
+        {
+            return;
+        }
         if (_playlistService.CurrentIndex - 1 >= 0)
         {
             _playlistService.CurrentIndex--;
@@ -80,13 +81,20 @@ public class NowPlayingService
         set
         {
             loop = value;
+            // Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
+            // Log is this channel loop or not by call BASS
+            Log.Information("🔁 Looping is {Loop}", loop);
             if (loop)
             {
                 Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
             }
             else
             {
-                Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Default);
+                Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, 0);
+                Bass.ChannelSetSync(_nowPlaying.SongStream, SyncFlags.End, 0, (handle, channel, data, user) =>
+                {
+                    Next();
+                });
             }
         }
     }
@@ -116,7 +124,7 @@ public class NowPlayingService
     }
 
     /// <summary>
-    /// Play a tract to the audio device
+    /// Play a track to the audio device
     /// </summary>
     /// <param name="path">The path to the track</param>
     private void PlayTrack(string path)
@@ -127,6 +135,17 @@ public class NowPlayingService
             Bass.StreamFree(_nowPlaying.SongStream);
         }
         _nowPlaying.SongStream = Bass.CreateStream(path);
+        if (loop)
+        {
+            Bass.ChannelFlags(_nowPlaying.SongStream, BassFlags.Loop, BassFlags.Loop);
+        }
+        else
+        {
+            Bass.ChannelSetSync(_nowPlaying.SongStream, SyncFlags.End, 0, (handle, channel, data, user) =>
+            {
+                Next();
+            });
+        }
         Bass.ChannelSetAttribute(_nowPlaying.SongStream, ChannelAttribute.Volume, Volume / 100f);
         if (_nowPlaying.SongStream == 0)
         {
