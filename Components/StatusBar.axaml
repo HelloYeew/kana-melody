@@ -7,6 +7,6 @@
              x:Class="KanaMelody.Components.StatusBar"
              x:DataType="vm:StatusBarViewModel">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-        <TextBlock Text="{Binding StatusText}" Height="20"></TextBlock>
+        <TextBlock Text="{Binding StatusText}" Foreground="LightGray" FontSize="12"></TextBlock>
     </StackPanel>
 </UserControl>
