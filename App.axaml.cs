@@ -39,8 +39,7 @@ public class App : Application
     {
         // Status bar view model need to be initialized first before initialize logger
         _statusBarViewModel = new StatusBarViewModel();
-        SetupLogging();
-        InitializeLogger();
+        Logger.AddStatusBarSinkConfiguration(_statusBarViewModel);
         
         var collection = new ServiceCollection();
         collection.AddSingleton(_statusBarViewModel);
@@ -181,8 +180,6 @@ public class App : Application
 #else
         _loggerConfiguration.MinimumLevel.Information();
 #endif
-        
-        
     }
 
     /// <summary>
