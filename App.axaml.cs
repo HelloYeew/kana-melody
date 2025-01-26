@@ -1,12 +1,10 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using KanaMelody.Database;
-using KanaMelody.Development;
 using KanaMelody.Services;
 using KanaMelody.Utilities;
 using KanaMelody.ViewModels;
@@ -37,9 +35,36 @@ public class App : Application
     
     public override void Initialize()
     {
-        // Status bar view model need to be initialized first before initialize logger
         _statusBarViewModel = new StatusBarViewModel();
-        Logger.AddStatusBarSinkConfiguration(_statusBarViewModel);
+        
+        // To receive unhandled exceptions from all threads in the application to the logger
+        // the logger must be initialized before everything else
+        // TODO: Serilog seem to messed up file logger sink, see log folder for more info
+        StorageService.CleanOldLogFiles();
+        
+        var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
+        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
+        
+        // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
+        _loggerConfiguration = new LoggerConfiguration()
+            .WriteTo.Console(outputTemplate: outputTemplate)
+            .WriteTo.File(
+                Path.Combine(StorageService.LogFullPath, logFileName),
+                outputTemplate: outputTemplate,
+                retainedFileCountLimit: 20
+            )
+            .WriteTo.Sink(new StatusBarLogSink(_statusBarViewModel));
+        
+#if DEBUG
+        _loggerConfiguration.MinimumLevel.Debug();
+#else
+        _loggerConfiguration.MinimumLevel.Information();
+#endif
+        Log.Logger = _loggerConfiguration.CreateLogger();
+        Logger.LogHeader();
+        
+        AppDomain currentDomain = AppDomain.CurrentDomain;
+        currentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
         
         var collection = new ServiceCollection();
         collection.AddSingleton(_statusBarViewModel);
@@ -155,43 +180,8 @@ public class App : Application
         Log.Information("👋 Application exited with code {ExitCode}", e.ApplicationExitCode);
     }
 
-    /// <summary>
-    /// Setup the logger configuration.
-    /// </summary>
-    private void SetupLogging()
+    private static void GlobalUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
     {
-        var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
-        var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
-        
-        StorageService.CleanOldLogFiles();
-        
-        // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
-        _loggerConfiguration = new LoggerConfiguration()
-            .WriteTo.Console(outputTemplate: outputTemplate)
-            .WriteTo.Sink(new StatusBarLogSink(_statusBarViewModel))
-            .WriteTo.File(
-                Path.Combine(StorageService.LogFullPath, logFileName),
-                outputTemplate: outputTemplate,
-                retainedFileCountLimit: 20
-            );
-        
-#if DEBUG
-        _loggerConfiguration.MinimumLevel.Debug();
-#else
-        _loggerConfiguration.MinimumLevel.Information();
-#endif
-    }
-
-    /// <summary>
-    /// Initialize the logger with the configuration and write the initial log.
-    /// </summary>
-    public void InitializeLogger()
-    {
-        Log.Logger = _loggerConfiguration.CreateLogger();
-        Log.Information("------------------------------------");
-        Log.Information("Log for KanaMelody {Version} (Debug: {IsDebug})", DebugUtils.GetVersion(), DebugUtils.IsDebugBuild);
-        Log.Information("Framework : {Framework}", RuntimeInformation.FrameworkDescription);
-        Log.Information("Environment: {RuntimeInfo} ({OSVersion}), {ProcessorCount} cores {Architecture}", RuntimeInfo.OS, Environment.OSVersion, Environment.ProcessorCount, RuntimeInformation.OSArchitecture);
-        Log.Information("------------------------------------");
+        Log.Error(e.ExceptionObject as Exception, "Unhandled exception");
     }
 }
