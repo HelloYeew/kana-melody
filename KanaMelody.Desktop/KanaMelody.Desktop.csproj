@@ -35,6 +35,8 @@
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="Velopack" Version="0.0.1053" />
         <PackageReference Include="z440.atl.core" Version="6.10.0" />
+        
+<!--        TODO: PackageReference to NativeLibs when published to NuGet-->
     </ItemGroup>
 
     <ItemGroup>
