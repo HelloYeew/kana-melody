@@ -6,6 +6,7 @@ public class PlayerSettings : INotifyPropertyChanged
 {
     private double _volume;
     private string _latestSongPath = string.Empty;
+    private bool _loop;
     
     public double Volume
     {
@@ -26,11 +27,22 @@ public class PlayerSettings : INotifyPropertyChanged
             OnPropertyChanged(nameof(LatestSongPath));
         }
     }
+    
+    public bool Loop
+    {
+        get => _loop;
+        set
+        {
+            _loop = value;
+            OnPropertyChanged(nameof(Loop));
+        }
+    }
 
     public static PlayerSettings Default => new PlayerSettings
     {
         Volume = 100,
-        LatestSongPath = string.Empty
+        LatestSongPath = string.Empty,
+        Loop = false
     };
 
     public event PropertyChangedEventHandler? PropertyChanged;

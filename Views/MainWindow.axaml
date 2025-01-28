@@ -23,10 +23,22 @@
                 <Separator/>
                 <MenuItem Header="_Exit" Command="{Binding ExitApplicationCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Database">
+                <MenuItem Header="_Rebuild database" Command="{Binding RebuildDatabaseCommand}"/>
+            </MenuItem>
         </Menu>
         <Grid>
-            <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20 ,20,200" />
-            <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+            <Grid ColumnDefinitions="*,300">
+                <components:TrackList DataContext="{Binding TrackListViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="20,20,20,200" Grid.Row="0" Grid.Column="0"/>
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="Playlist" FontSize="16" FontWeight="Bold" Margin="0,0,20,10"/>
+                    <components:Playlist DataContext="{Binding PlaylistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0, 10 ,20,200"/>
+                </StackPanel>
+            </Grid>
+            <Grid>
+                <components:PlaybackController DataContext="{Binding PlaybackControllerViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0,0,0,10" />
+                <components:StatusBar DataContext="{Binding StatusBarViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Padding="10,0,10,0" />
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

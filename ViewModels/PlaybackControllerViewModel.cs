@@ -19,7 +19,9 @@ public class PlaybackControllerViewModel : ReactiveObject
     }
     
     public bool IsPlaying => _nowPlayingService.IsPlaying;
+    public bool IsLooping => _nowPlayingService.IsLooping;
     public string PlayButtonText => IsPlaying ? "\u23f8" : "\u23f5";
+    public string LoopButtonText => IsLooping ? "🔂" : "🔁";
     public string Title => _nowPlayingService.Title;
     public string Artist => _nowPlayingService.Artist;
     public string Album => _nowPlayingService.Album;
@@ -68,11 +70,25 @@ public class PlaybackControllerViewModel : ReactiveObject
             _nowPlayingService.Pause();
         else
             _nowPlayingService.Play();
-        this.RaisePropertyChanged(nameof(IsPlaying));
-        this.RaisePropertyChanged(nameof(Title));
-        this.RaisePropertyChanged(nameof(Artist));
-        this.RaisePropertyChanged(nameof(Album));
-        this.RaisePropertyChanged(nameof(PlayButtonText));
+        UpdateComponents();
+    }
+    
+    public void NextCommand()
+    {
+        _nowPlayingService.Next();
+        UpdateComponents();
+    }
+    
+    public void PreviousCommand()
+    {
+        _nowPlayingService.Previous();
+        UpdateComponents();
+    }
+    
+    public void LoopCommand()
+    {
+        _nowPlayingService.IsLooping = !_nowPlayingService.IsLooping;
+        this.RaisePropertyChanged(nameof(LoopButtonText));
     }
     
     public void MuteCommand()

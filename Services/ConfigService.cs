@@ -2,9 +2,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using KanaMelody.Models.Configs;
 using Serilog;
 
@@ -170,7 +167,7 @@ public class ConfigService : INotifyPropertyChanged
         {
             string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(StorageService.StorageSettingsFullPath, json);
-            Log.Information("Saved storage settings to {StorageSettingsFile}", StorageService.StorageSettingsFile);
+            Log.Debug("Saved storage settings to {StorageSettingsFile}", StorageService.StorageSettingsFile);
         }
         catch (Exception e)
         {
@@ -184,7 +181,7 @@ public class ConfigService : INotifyPropertyChanged
         {
             string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(StorageService.PlayerSettingsFullPath, json);
-            Log.Information("Saved player settings to {PlayerSettingsFile}", StorageService.PlayerSettingsFile);
+            Log.Debug("Saved player settings to {PlayerSettingsFile}", StorageService.PlayerSettingsFile);
         }
         catch (Exception e)
         {
@@ -198,7 +195,7 @@ public class ConfigService : INotifyPropertyChanged
         {
             string json = JsonSerializer.Serialize(settings);
             File.WriteAllText(StorageService.FolderSettingsFullPath, json);
-            Log.Information("Saved folder settings to {FolderSettingsFile}", StorageService.FolderSettingsFile);
+            Log.Debug("Saved folder settings to {FolderSettingsFile}", StorageService.FolderSettingsFile);
         }
         catch (Exception e)
         {

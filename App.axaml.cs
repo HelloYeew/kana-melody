@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using KanaMelody.Development;
+using KanaMelody.Database;
 using KanaMelody.Services;
+using KanaMelody.Utilities;
 using KanaMelody.ViewModels;
 using KanaMelody.Views;
 using ManagedBass;
@@ -23,47 +23,85 @@ public class App : Application
     
     private ConfigService _configService = null!;
     private PlaylistViewModel _playlistViewModel = null!;
+    private MainWindowViewModel _mainWindowViewModel = null!;
+    private StatusBarViewModel _statusBarViewModel = null!;
+    private TrackListViewModel _trackListViewModel = null!;
+    
+    private SongDatabaseContext _songDatabaseContext = null!;
+    
+    private DatabaseService _databaseService = null!;
+    
+    private LoggerConfiguration _loggerConfiguration = null!;
     
     public override void Initialize()
     {
+        _statusBarViewModel = new StatusBarViewModel();
+        
+        // To receive unhandled exceptions from all threads in the application to the logger
+        // the logger must be initialized before everything else
+        // TODO: Serilog seem to messed up file logger sink, see log folder for more info
+        StorageService.CleanOldLogFiles();
+        
         var logFileName = $"log-{(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds}-{Guid.NewGuid()}.log";
         var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}]: {Message:lj}{NewLine}{Exception}";
         
-        StorageService.CleanOldLogFiles();
-        
         // Log to console and file with rotate log file every session, also delete old log files after exceed 20 session
-        var loggerConfig = new LoggerConfiguration()
+        _loggerConfiguration = new LoggerConfiguration()
             .WriteTo.Console(outputTemplate: outputTemplate)
             .WriteTo.File(
                 Path.Combine(StorageService.LogFullPath, logFileName),
                 outputTemplate: outputTemplate,
                 retainedFileCountLimit: 20
-            );
+            )
+            .WriteTo.Sink(new StatusBarLogSink(_statusBarViewModel));
         
 #if DEBUG
-        loggerConfig.MinimumLevel.Debug();
+        _loggerConfiguration.MinimumLevel.Debug();
 #else
-        loggerConfig.MinimumLevel.Information();
+        _loggerConfiguration.MinimumLevel.Information();
 #endif
+        Log.Logger = _loggerConfiguration.CreateLogger();
+        Logger.LogHeader();
         
-        Log.Logger = loggerConfig.CreateLogger();
-        Log.Information("📝 Logger initialized with file: {LogFileName}", logFileName);
-
-        Log.Information("------------------------------------");
-        Log.Information("Log for KanaMelody {Version} (Debug: {IsDebug})", DebugUtils.GetVersion(), DebugUtils.IsDebugBuild);
-        Log.Information("Framework : {Framework}", RuntimeInformation.FrameworkDescription);
-        Log.Information("Environment: {RuntimeInfo} ({OSVersion}), {ProcessorCount} cores {Architecture}", RuntimeInfo.OS, Environment.OSVersion, Environment.ProcessorCount, RuntimeInformation.OSArchitecture);
-        Log.Information("------------------------------------");
+        AppDomain currentDomain = AppDomain.CurrentDomain;
+        currentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
         
         var collection = new ServiceCollection();
-        collection.AddCommonServices();
+        collection.AddSingleton(_statusBarViewModel);
+        
+        // Config service
+        _configService = new ConfigService();
+        collection.AddSingleton(_configService);
+        collection.LoadSingleton<NowPlayingService>();
+        collection.LoadSingleton<PlaylistService>();
+        
+        // Database
+        _songDatabaseContext = new SongDatabaseContext(_configService.StorageSettings);
+        collection.AddSingleton(_songDatabaseContext);
+        collection.LoadSingleton<DatabaseService>();
+        
+        // Component view model
+        collection.LoadSingleton<PlaylistViewModel>();
+        collection.LoadSingleton<PlaybackControllerViewModel>();
+        collection.LoadSingleton<TrackListViewModel>();
+        
+        // TODO: Remove this after Kana completely rely on database
+        _services = collection.BuildServiceProvider();
+        _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+        _statusBarViewModel = _services.GetRequiredService<StatusBarViewModel>();
+        _trackListViewModel = _services.GetRequiredService<TrackListViewModel>();
+        _databaseService = _services.GetRequiredService<DatabaseService>();
+        
+        // App
         collection.AddSingleton(this);
         
-        _services = collection.BuildServiceProvider();
+        // Windows view model
+        collection.LoadSingleton<MainWindowViewModel>();
         
-        // Invoke LoadConfig
-        _configService = _services.GetRequiredService<ConfigService>();
-        _playlistViewModel = _services.GetRequiredService<PlaylistViewModel>();
+        _services = collection.BuildServiceProvider();
+        _mainWindowViewModel = _services.GetRequiredService<MainWindowViewModel>();
+        
+        Log.Information("✅ All services added");
         
         AvaloniaXamlLoader.Load(this);
     }
@@ -85,8 +123,9 @@ public class App : Application
             {
                 result
             };
-            _playlistViewModel.ScanAllFolder();
             _configService.SaveConfig();
+            _databaseService.UpdateSongEntry(true);
+            _trackListViewModel.UpdateTrackList();
         }
     }
     
@@ -119,7 +158,7 @@ public class App : Application
             desktop.Exit += OnExit;
             desktop.MainWindow = new MainWindow
             {
-                DataContext = _services.GetRequiredService<MainWindowViewModel>(),
+                DataContext = _mainWindowViewModel
             };
         }
 
@@ -139,5 +178,10 @@ public class App : Application
         _configService.SaveConfig();
         Bass.Free();
         Log.Information("👋 Application exited with code {ExitCode}", e.ApplicationExitCode);
-    } 
+    }
+
+    private static void GlobalUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+    {
+        Log.Error(e.ExceptionObject as Exception, "Unhandled exception");
+    }
 }

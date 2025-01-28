@@ -5,9 +5,9 @@
              xmlns:vm="clr-namespace:KanaMelody.ViewModels"
              xmlns:models="clr-namespace:KanaMelody.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="KanaMelody.Components.Playlist"
-             x:DataType="vm:PlaylistViewModel">
-    <ListBox ItemsSource="{Binding Playlist}" SelectedItem="{Binding SelectedSong}">
+             x:Class="KanaMelody.Components.TrackList"
+             x:DataType="vm:TrackListViewModel">
+    <ListBox ItemsSource="{Binding TrackList}" SelectedItem="{Binding SelectedSong}">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Song}">
                 <StackPanel Orientation="Horizontal">

@@ -6,14 +6,20 @@ namespace KanaMelody.Services;
 public class PlaylistService
 {
     // TODO: Support multiple playlists
-    private List<SongEntry> _playlist = new();
+    private List<Song> _playlist = new();
+    public int CurrentIndex { get; set; } = -1;
     
-    public void AddSong(SongEntry song)
+    public void AddSong(Song song)
     {
         _playlist.Add(song);
     }
     
-    public SongEntry[] GetPlaylist()
+    public void SetPlaylist(Song[] playlist)
+    {
+        _playlist = new List<Song>(playlist);
+    }
+    
+    public Song[] GetPlaylist()
     {
         return _playlist.ToArray();
     }
