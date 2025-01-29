@@ -5,10 +5,10 @@ namespace KanaMelody.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly App _mainApp;
+    private readonly KanaMelodyApp _mainApp;
     private readonly DatabaseService _databaseService;
     
-    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, StatusBarViewModel statusBarViewModel, TrackListViewModel trackListViewModel, App app, DatabaseService databaseService)
+    public MainWindowViewModel(PlaybackControllerViewModel playbackControllerViewModel, PlaylistViewModel playlistViewModel, StatusBarViewModel statusBarViewModel, TrackListViewModel trackListViewModel, KanaMelodyApp app, DatabaseService databaseService)
     {
         PlaybackControllerViewModel = playbackControllerViewModel;
         PlaylistViewModel = playlistViewModel;

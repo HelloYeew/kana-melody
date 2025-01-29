@@ -17,7 +17,7 @@ using Serilog;
 
 namespace KanaMelody;
 
-public class App : Application
+public class KanaMelodyApp : Application
 {
     private IServiceProvider _services = null!;
     
