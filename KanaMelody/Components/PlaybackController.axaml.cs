@@ -34,6 +34,7 @@ public partial class PlaybackController : UserControl
                     Source = image.Source,
                     Stretch = Avalonia.Media.Stretch.Uniform
                 },
+                Title = "Album Art",
                 Width = 800,
                 Height = 600
             };
